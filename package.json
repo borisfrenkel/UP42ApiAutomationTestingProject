@@ -1,0 +1,14 @@
+{
+  "name": "up42apiautomationproject",
+  "version": "1.0.0",
+  "description": "UP42 Interview Automation Task",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Boris Frenkel",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^9.4.1"
+  }
+}
