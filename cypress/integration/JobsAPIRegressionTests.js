@@ -1,6 +1,6 @@
 require("../support/commands");
 
-describe("My First Test", () => {
+describe("Work flow tests", () => {
   var workFlowId;
 
   before(function () {
@@ -20,11 +20,27 @@ describe("My First Test", () => {
     });
   });
 
-  it("Create and run job - verify job details", () => {
-    cy.CreateJobAndRunJob(workFlowId).then((jobDetails) => {
+  it("Create and run job with valid input data - verify job details", () => {
+    cy.CreateAndRunJob(workFlowId).then((jobDetails) => {
       expect(jobDetails).to.have.string("x");
       expect(jobDetails).to.have.string("y");
       expect(jobDetails).to.have.string("z");
     });
+  });
+
+  it("Create and run job with invalid auth token - verify error message", () => {
+    cy.TryToCreateAndRunJobWithOutdatedToken(workFlowId).then((jobDetails) => {
+      expect(jobDetails).to.have.string('"code":401');
+      expect(jobDetails).to.have.string('"message":"Unauthorized"');
+    });
+  });
+
+  it("Create and run job with not existing flow id - verify error message", () => {
+    cy.CreateAndRunJob(Cypress.config().notExistingFlowId).then(
+      (jobDetails) => {
+        expect(jobDetails).to.have.string("x");
+        expect(jobDetails).to.have.string("y");
+      }
+    );
   });
 });

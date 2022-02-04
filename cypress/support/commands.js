@@ -55,7 +55,7 @@ Cypress.Commands.add("AddFlow", () => {
   });
 });
 
-Cypress.Commands.add("CreateJobAndRunJob", (workFlowId) => {
+Cypress.Commands.add("CreateAndRunJob", (workFlowId) => {
   cy.GetAuthToken().then(() => {
     var raw = JSON.stringify({
       "nasa-modis:1": {
@@ -85,6 +85,37 @@ Cypress.Commands.add("CreateJobAndRunJob", (workFlowId) => {
       body: raw,
       redirect: "follow",
     });
+  });
+});
+
+Cypress.Commands.add("TryToCreateAndRunJobWithOutdatedToken", (workFlowId) => {
+  var raw = JSON.stringify({
+    "nasa-modis:1": {
+      time: "2018-12-01T00:00:00+00:00/2020-12-31T23:59:59+00:00",
+      limit: 1,
+      zoom_level: 9,
+      imagery_layers: ["MODIS_Terra_CorrectedReflectance_TrueColor"],
+      bbox: [13.365373, 52.49582, 13.385796, 52.510455],
+    },
+    "sharpening:1": {
+      strength: "medium",
+    },
+  });
+  let myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + Cypress.config().outdatedToken);
+  myHeaders.append("Content-Type", "application/json");
+
+  cy.request({
+    method: "POST",
+    url:
+      "https://api.up42.com/projects/" +
+      Cypress.config().projectID +
+      "/workflows/" +
+      workFlowId +
+      "/jobs",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
   });
 });
 
